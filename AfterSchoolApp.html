@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js After School App</title>
+    <!-- Import Script to run Vue-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src= "lessons.js"></script>
+
+</head>
+
+<body>
+    <!-- Create the DOM space for vue to run in-->
+    <div id="app">
+        <header>
+            <h2 v-text="sitename"></h2>
+            <button>
+                {{ cartItemCount }}
+                <span class="fa fa-cart-plus"></span> Checkout
+            </button> 
+        </header>
+        <main class="productContainer"> 
+            <div v-for="product in products" :key="product.id">  
+            <figure>
+                <img v-bind:src="product.image">
+            </figure>
+            <h2 v-text ="product.title"></h2>
+            <p v-html="product.description"></p>
+            <!-- The double curly brackets is the shorter version of v-text -->
+            <p>Subject: {{product.subject}}</p>
+            <p>Location: {{product.location}}</p>
+            <p>Price: ₦{{product.price}}</p>
+            <p>Spaces: {{product.space}}</p>
+            <button v-on:click="addToCart" v-if="canAddToCart">Add to Cart</button>
+            <button disabled="disabled" v-else>Add to Cart</button>
+        </div>
+        </main>
+
+        <div>
+            <input type="radio" id="subject" name="filter" value="subject" @change="setFieldValue(fieldFilter.value)"/></input>
+            <label for="subject">Subject</label>
+        </div>
+    
+        <div>
+            <input type="radio" id="location" name="filter" value="location" @change="setFieldValue(fieldFilter.value)"/></input>
+            <label for="location">Location</label>
+        </div>
+    
+        <div>
+            <input type="radio" id="price" name="filter" value="price" @change="sortByPrice"/></input>
+            <label for="price">Price</label>
+        </div>
+    
+        <div>
+            <input type="radio" id="availability" name="filter" value="availability" @change="setFieldValue(fieldFilter.value)"/></input>
+            <label for="availability">Availability</label>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        // const lessonData = require('./lessons.js');
+    //Instatiate a Vue object and set some values to it
+        var webstore = new Vue({
+    // Link Vue to the Div with an id of app
+            el: '#app',
+            data: {
+                sitename: 'Vue.js After School App',
+                products: lessondata,
+            cart: [] //array to store items in shopping cart
+        },
+        methods:{
+            //Add to cart function which will take the product id and store it in cart
+            addToCart: function(){
+            //use of console.log to check that the function is fired correctly
+                console.log('testing');
+                this.cart.push(this.product.id);
+            },
+
+            sortByPrice: function() {​​​
+            },
+        },
+        computed: {
+            //Sends the value of items in the cart array to the checkout button
+                cartItemCount: function(){
+                    return this.cart.length || '';
+                },
+                canAddToCart: function (){
+                    //return this.product.availableInventory > this.cartItemCount;
+                }
+        }
+     });
+    </script>
+    <style>
+        .productContainer{
+            flex-direction: row;
+            display: flex;
+            flex-wrap: wrap;
+        },
+    </style>
+</body>
+</html>
