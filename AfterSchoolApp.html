@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,11 +16,13 @@
     <div id="app">
         <header>
             <h2 v-text="sitename"></h2>
-            <button>
+            <button @click="showCheckout">
                 {{ cartItemCount }}
                 <span class="fa fa-cart-plus"></span> Checkout
             </button> 
         </header>
+
+        <div v-if="showProduct">
         <main class="productContainer"> 
             <div v-for="product in products" :key="product.id">  
             <figure>
@@ -29,19 +31,46 @@
             <h2 v-text ="product.title"></h2>
             <p v-html="product.description"></p>
             <!-- The double curly brackets is the shorter version of v-text -->
-            <p>Subject: {{product.subject}}</p>
-            <p>Location: {{product.location}}</p>
-            <p>Price: ₦{{product.price}}</p>
-            <p>Spaces: {{product.space}}</p>
-            <button v-on:click="addToCart" v-if="canAddToCart">Add to Cart</button>
-            <button disabled="disabled" v-else>Add to Cart</button>
+            <p><b>Subject:</b> {{product.subject}}</p>
+            <p><b>Location:</b> {{product.location}}</p>
+            <p><b>Price:</b> ₦{{product.price}}</p>
+            <p><b>Available Spaces:</b> {{product.space}}</p> 
+            <button v-on:click="addToCart(product)">Add to Cart</button>
+            <button disabled="disabled">Add to Cart</button>
+            
         </div>
         </main>
+    </div>
 
-        
     
 
 
+
+    <div v-else>
+
+        
+        <main class="productContainer"> 
+            <div v-for="product in cart">  
+            <figure>
+                <img v-bind:src="product.image">
+            </figure>
+            <h2 v-text ="product.title"></h2>
+            <p v-html="product.description"></p>
+         <!-- The double curly brackets is the shorter version of v-text -->
+            <p><b>Subject:</b> {{product.subject}}</p>
+            <p><b>Location:</b> {{product.location}}</p>
+            <p><b>Price:</b> ₦{{product.price}}</p>
+            <p><b>Available Spaces:</b> {{product.space}}</p> 
+            <button v-on:click="addToCart(product)">Add to Cart</button>
+            <button disabled="disabled">Add to Cart</button>
+
+        </div>
+        </main>
+    </div>
+
+        </div>
+
+        
 
 
     <script>
@@ -51,31 +80,35 @@
     // Link Vue to the Div with an id of app
             el: '#app',
             data: {
-                sitename: 'Vue.js After School App',
+                showProduct: "true",
+                sitename: 'Vue.js After School Classes and Activities',
                 products: lessondata,
-            cart: [] //array to store items in shopping cart
-        },
-        methods:{
-            //Add to cart function which will take the product id and store it in cart
-            addToCart: function(){
-            //use of console.log to check that the function is fired correctly
-                console.log('testing');
-                this.cart.push(this.product.id);
+                cart: [] //array to store items in shopping cart
             },
-
-            sortByPrice: function() {​​​
+            methods:{
+                //Add to cart function which will take the product id and store it in cart
+                addToCart: function(product){
+                //use of console.log to check that the function is fired correctly
+                    console.log('testing');
+                    this.cart.push(product);
+                },
+                showCheckout: function(){
+                    this.showProduct = this.showProduct ? false : true;
+                }
+   
             },
-        },
-        computed: {
-            //Sends the value of items in the cart array to the checkout button
+            computed: {
+                //Sends the value of items in the cart array to the checkout button
                 cartItemCount: function(){
                     return this.cart.length || '';
                 },
-                canAddToCart: function (){
-                    //return this.product.availableInventory > this.cartItemCount;
+                //Makes sure that there are enough items in the inventory. If not we'll disable
+                //the add to cart button.
+                canAddToCart: function(){
+                    return this.product.availableInventory > this.cartItemCount;
                 }
-        }
-     });
+            }
+        });
     </script>
     <style>
         .productContainer{
